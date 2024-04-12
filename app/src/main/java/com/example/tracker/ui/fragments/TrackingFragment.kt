@@ -12,6 +12,7 @@ import com.example.tracker.other.Constants.ACTION_START_OR_RESUME_SERVICE
 import com.example.tracker.other.Constants.MAP_ZOOM
 import com.example.tracker.other.Constants.POLYLINE_COLOR
 import com.example.tracker.other.Constants.POLYLINE_WIDTH
+import com.example.tracker.other.TrackingUtility
 import com.example.tracker.services.Polyline
 import com.example.tracker.services.TrackingService
 
@@ -25,6 +26,7 @@ import kotlinx.android.synthetic.main.fragment_tracking.*
 @AndroidEntryPoint
 class TrackingFragment : Fragment(R.layout.fragment_tracking) {
 
+    private var curTimeInMillis: Long = 0L
     private val viewModel: MainViewModel by viewModels()
 
     private var isTracking = false
@@ -55,6 +57,12 @@ class TrackingFragment : Fragment(R.layout.fragment_tracking) {
             pathPoints = it
             addLatestPolyline()
             moveCameraToUser()
+        })
+
+        TrackingService.timeRunInMillis.observe(viewLifecycleOwner, Observer{
+            curTimeInMillis = it
+            val formattedTime = TrackingUtility.getFormattedStopWatchTime(curTimeInMillis, true)
+            tvTimer.text = formattedTime
         })
     }
 
